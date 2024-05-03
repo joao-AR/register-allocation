@@ -1,11 +1,11 @@
-Main: Main.o 
-	g++ -g Main.o -o Main
+Main: Main.o Graph.o
+	g++ -g Main.o Graph.o -o Main
 
 Main.o: Main.cpp
 	g++ -c Main.cpp
 
-# Parsing.o: ./Parsing/Parsing.cpp
-# 	g++ -c ./Parsing/Parsing.cpp
+Graph.o: ./Graph.cpp
+	g++ -c ./Graph.cpp
 	
 clean: 
 	rm *.o Main 

@@ -1,3 +1,3 @@
 make
-./Main < g.txt
+./regalloc < g.txt > s.txt
 make clean

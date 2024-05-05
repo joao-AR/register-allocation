@@ -34,9 +34,10 @@ int select_node_to_remove(const Graph &g, int qtd_reg){
                         ntr = node_value;
                         ntr_neightbors_qtd = node_neightbors_qtd;
                     }
-                }else{
-                    ntr_neightbors_qtd = node_neightbors_qtd;
+                //Selecionar o menor grau
+                }else if(ntr_neightbors_qtd > node_neightbors_qtd || ntr_neightbors_qtd == -1 ){
                     ntr = node_value;
+                    ntr_neightbors_qtd = node_neightbors_qtd;
                 }
             
             }else{

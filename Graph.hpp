@@ -12,7 +12,7 @@
     struct GraphNode {
         set<int> neighbors;
         set<int> unavailable_registers;
-        int r = -1;
+        int reg = -1;
     };
 
     struct Graph {

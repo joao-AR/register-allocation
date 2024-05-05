@@ -7,4 +7,7 @@
         std::set<int> unavailable_registers;
         bool possible_spill;
     };
-#endif
+
+    int get_best_register (std::set<int>& unavailable_registers, int qtd_reg);
+
+#endif  

@@ -36,7 +36,7 @@ int main() {
             iss >> token; // Lê o primeiro token da linha
             k = stoi(token.substr(2));
 
-            cout << "Número registradores: " << k << endl;
+            // cout << "Número registradores: " << k << endl;
         } else {
             //Linha Grafo de Interferencia
 
@@ -101,9 +101,14 @@ int main() {
             stack_node.node = ntr;
             stack_node.unavailable_registers = graph.nodes[ntr].unavailable_registers;
             stack_node.neighbors = graph.nodes[ntr].neighbors;
+            
+            cout << "Push: " << stack_node.node;
 
+            if(stack_node.neighbors.size() >= k ){//Spill
+                cout << " *";
+            }        
+            cout << endl;
             // Adicionar nó na pilha
-            // cout << "push: " << stack_node.node << "|" << endl;
             stack.push(stack_node);
 
             //Remover Referencias ao nó nos outros nós antes de removelo
@@ -121,9 +126,40 @@ int main() {
             // cout << endl;
             
         }
-        
+
+        //======Re-construir Grafo dando pop na Stack======
+        vector<pair<int, int>> registers;
+
+        while(stack.size() != 0){
+            int node = stack.top().node;
+            // cout << "stack size: " << stack.size() << endl;
+            // cout << "node: " << node << endl;
+            //Pansando os dados da stack para o grafo
+            graph.nodes[node].neighbors = stack.top().neighbors;
+            graph.nodes[node].unavailable_registers = stack.top().unavailable_registers;
+            
+             // atualizando os registradores não disponiveis
+            for(auto &reg : registers){
+                // cout << "+++++++++++++++++++++" <<  endl;
+                // cout << "first: " << reg.first << endl;
+                // cout << "second: " << reg.second << endl;
+                // cout << "+++++++++++++++++++++" <<  endl;
+                if(graph.nodes[node].neighbors.count(reg.first) > 0){
+                    graph.nodes[node].unavailable_registers.insert(reg.second);
+                }
+            }
+            graph.nodes[node].reg = get_best_register(graph.nodes[node].unavailable_registers, k);
+            
+            // cout << endl;
+            cout << "Pop: "<< node << " -> " << graph.nodes[node].reg << endl;
+            
+            registers.push_back(make_pair(node,graph.nodes[node].reg ));
+            stack.pop(); 
             
 
+        }
+        
+        // print_graph(graph);
         
         // //Todo Spill
         // graph.nodes.clear();

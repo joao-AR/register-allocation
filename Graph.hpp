@@ -21,4 +21,5 @@
     };
 
     void print_graph(const Graph &g);
+    int select_node_to_remove(const Graph &g, int qtd_reg);
 #endif

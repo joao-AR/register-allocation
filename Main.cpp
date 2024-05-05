@@ -7,14 +7,9 @@
 #include <map>
 #include <algorithm>
 #include "Graph.hpp"
+#include "Stack.hpp"
 using namespace std;
 
-struct nodes_stack {
-    int node;
-    std::set<int> neighbors;
-    std::set<int> unavailable_registers;
-    bool possible_spill;
-};
 
 
 
@@ -64,8 +59,6 @@ int main() {
                     }
                 } 
             }
-
-            
         }
 
     }
@@ -93,40 +86,26 @@ int main() {
 
 
     //Rodar até o numero de registradores ser 2
-    for (int qtd_reg = k; qtd_reg >= 2; qtd_reg--){
-        // ntr: node to remove
-        int ntr = graph.nodes.begin()->first;
-        int ntr_neightbors_qtd = graph.nodes.begin()->second.neighbors.size();
-        // int ntr = -1;
-        // int ntr_neightbors_qtd = -1;
-
-         //======Simplify Grafo e colocar na Stack======
-        for (const auto &node : graph.nodes) {
+    // for (int qtd_reg = k; qtd_reg >= 2; qtd_reg--){
+        int ntr_neightbors_qtd = -1;
+        bool spill;
+        //Enquanto não tiver removido todos os nós do grafo e colocado na stack
+        while (graph.nodes.size() != 0 ){
+            // ntr: node to remove
+            int ntr = select_node_to_remove(graph,k);
+            // cout << "ntr: " << ntr << endl;
+            // cout << "tamnho grafo: " << graph.nodes.size() << endl;
+            //======Simplify Grafo e colocar na Stack======
             nodes_stack stack_node;
-            int node_value = node.first; 
-            int node_neightbors_qtd = node.second.neighbors.size();
-            
-            if(node_neightbors_qtd < qtd_reg ){
-                if(ntr_neightbors_qtd == node_neightbors_qtd ){
-                    if(node_value < ntr){
-                        ntr = node_value;
-                        ntr_neightbors_qtd = node_neightbors_qtd;
-                    }
-                }else{
-                    ntr_neightbors_qtd = node_neightbors_qtd;
-                    ntr = node_value;
-                }
-            }
 
             stack_node.node = ntr;
             stack_node.unavailable_registers = graph.nodes[ntr].unavailable_registers;
             stack_node.neighbors = graph.nodes[ntr].neighbors;
-            //Todo Spill
 
             // Adicionar nó na pilha
             // cout << "push: " << stack_node.node << "|" << endl;
-
             stack.push(stack_node);
+
             //Remover Referencias ao nó nos outros nós antes de removelo
             for (auto &node_entry : graph.nodes) {
                 GraphNode &node = node_entry.second;
@@ -134,20 +113,25 @@ int main() {
             }
 
             // Remove nó do grafo
+            graph.nodes.erase(ntr);
             // cout << "erease: " << stack_node.node << "\n" << endl;
             // for (auto &un : stack_node.unavailable_registers){
-            //     cout << "UV: " << un << endl;
+            //     cout << " UV: " << un ;
             // }
-            cout << endl;
-            // graph.nodes.erase(ntr);
+            // cout << endl;
+            
         }
         
-        graph.nodes.clear();
+            
+
+        
+        // //Todo Spill
+        // graph.nodes.clear();
 
         //Todo logica
         //======Re-Build Grafo a partir da stack====== 
 
-    }
+    // }
     //print_graph(graph);
     return 0;
 }
